@@ -1,29 +1,31 @@
-FROM python:3.10-slim
+FROM python:3.10
 
-# Set working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Install OS-level build tools (needed for scikit-learn, numpy)
+# Install system packages required for pandas, numpy, scikit-learn, etc.
 RUN apt-get update && apt-get install -y \
     build-essential \
-    python3-dev \
     gcc \
     g++ \
+    python3-dev \
+    libatlas-base-dev \
     libopenblas-dev \
     liblapack-dev \
-    libatlas-base-dev \
+    libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy your code
+# Copy all project files
 COPY . .
 
-# Install Python dependencies
+# Upgrade pip and install Python dependencies
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Expose Streamlit port
+# Streamlit default port
 EXPOSE 8501
 
-# Start the app
+# Run Streamlit app
 CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.enableCORS=false"]
+
 
